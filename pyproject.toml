@@ -1,0 +1,13 @@
+[project]
+name = "recover-stranded-sweep"
+version = "0.1.0"
+description = "Recovery tool for funds stranded by the v25.12 force-close BIP86 derivation bug (ElementsProject/lightning#8831)."
+requires-python = ">=3.11"
+dependencies = [
+    "coincurve>=20.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+]
