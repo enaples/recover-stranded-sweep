@@ -30,6 +30,10 @@ There is exactly one stack item in the witness, the 64-byte Schnorr signature, b
 
 CLN's mnemonic-format wallet uses **BIP86** (taproot, `m/86'/0'/0'/0/N`) for everything on-chain. But on v25.12 the helper that builds onchaind sweep transactions ([`lightningd/onchain_control.c::onchaind_tx_unsigned`](https://github.com/ElementsProject/lightning/blob/v25.12/lightningd/onchain_control.c)) always derived the sweep's destination key with the **legacy BIP32** helper (`m/0/0/N`) regardless of wallet type. The output script committed to that legacy-derived key. The wallet's incoming-output scanner (`wallet_can_spend`) only checks BIP86-derived scripts, so it silently walked past the sweep output. The bookkeeper recorded the `to_wallet` move based on onchaind's status messages, hiding the mismatch from `listbalances`.
 
+## Disclaimer
+
+This software is provided "as is", without warranty of any kind, express or implied. It handles the wallet seed and signs Bitcoin transactions that move real funds; mistakes (a wrong `--final-key-idx`, a wrong `--passphrase`, a misread on-chain script, an undersized fee, a compromised host, an unintended broadcast) can result in **permanent and unrecoverable loss of funds**. You are solely responsible for verifying the derivation against the on-chain UTXO before signing, for the safety of the machine running the script, and for the transaction you broadcast. The author accepts no liability for any loss, damage, or other consequence arising from the use of this tool. If you are not comfortable independently auditing the derivation steps in [`recover_stranded_sweep.py`](recover_stranded_sweep.py) and the resulting transaction, do not use it.
+
 ## Safety
 
 - The script writes nothing to disk. It reads `--hsm-secret` and prints the signed tx to stdout. The derived scriptPubKey goes to stderr.
